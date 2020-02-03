@@ -64,12 +64,13 @@ class RecipientController {
     await recipient.destroy();
 
     return res.json({
-      message: 'Destinatário deletado com Sucesso',
+      message: 'Destinatário deletado com sucesso',
     });
   }
 
-  async indexByPk(req, res) {
+  async indexById(req, res) {
     const { id } = req.params;
+
     const recipient = await Recipient.findByPk(id);
 
     if (!recipient) {

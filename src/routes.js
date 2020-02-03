@@ -12,7 +12,7 @@ routes.use(authMiddleware);
 
 routes.post('/recipients', RecipientController.store);
 routes.put('/recipients/:id', RecipientController.update);
-routes.get('/recipients/:id', RecipientController.indexById);
 routes.delete('/recipients/:id', RecipientController.delete);
+routes.get('/recipients/:id', RecipientController.indexById);
 
 export default routes;
