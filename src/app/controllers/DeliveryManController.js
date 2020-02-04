@@ -1,18 +1,19 @@
 import * as Yup from 'yup';
-import DeliveryMen from '../models/DeliveryMen';
+import DeliveryMan from '../models/DeliveryMan';
 
-class DeliveryMenController {
+class DeliveryManController {
   async store(req, res) {
     const schema = Yup.object().shape({
       name: Yup.string().required(),
-      email: Yup.number().required(),
+      email: Yup.string().required(),
+      avatar_id: Yup.number(),
     });
 
     if (!(await schema.isValid(req.body))) {
       return res.status(400).json({ error: 'Falha na validação dos campos' });
     }
 
-    const deliveryMan = await DeliveryMen.create(req.body);
+    const deliveryMan = await DeliveryMan.create(req.body);
 
     return res.json({
       deliveryMan,
@@ -22,7 +23,8 @@ class DeliveryMenController {
   async update(req, res) {
     const schema = Yup.object().shape({
       name: Yup.string(),
-      email: Yup.number(),
+      email: Yup.string(),
+      avatar_id: Yup.number(),
     });
 
     if (!(await schema.isValid(req.body))) {
@@ -31,10 +33,12 @@ class DeliveryMenController {
 
     const { id } = req.params;
 
-    const deliveryMan = await DeliveryMen.findByPk(id);
+    const deliveryMan = await DeliveryMan.findByPk(id);
 
     if (!deliveryMan) {
-      return res.status(400).json({ error: 'Entregador enviado Inválido' });
+      return res
+        .status(400)
+        .json({ error: 'Id do entregador enviado é inválido' });
     }
 
     const deliveryManRes = await deliveryMan.update(req.body);
@@ -47,10 +51,12 @@ class DeliveryMenController {
   async delete(req, res) {
     const { id } = req.params;
 
-    const deliveryMan = await DeliveryMen.findByPk(id);
+    const deliveryMan = await DeliveryMan.findByPk(id);
 
     if (!deliveryMan) {
-      return res.status(400).json({ error: 'Entregador enviado Inválido' });
+      return res
+        .status(400)
+        .json({ error: 'Id do entregador enviado é inválido' });
     }
 
     await deliveryMan.destroy();
@@ -63,21 +69,21 @@ class DeliveryMenController {
   async index(req, res) {
     const { page = 1 } = req.query;
 
-    const deliveryMen = await DeliveryMen.findAll({
+    const deliveryMan = await DeliveryMan.findAll({
       limit: 10,
       offset: (page - 1) * 10,
     });
 
-    if (!deliveryMen) {
+    if (deliveryMan.length < 1) {
       return res
         .status(400)
         .json({ error: 'Não foi encontrado nenhum entregador' });
     }
 
     return res.json({
-      deliveryMen,
+      deliveryMan,
     });
   }
 }
 
-export default new DeliveryMenController();
+export default new DeliveryManController();

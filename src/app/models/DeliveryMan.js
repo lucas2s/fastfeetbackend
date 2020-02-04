@@ -1,11 +1,10 @@
 import Sequelize, { Model } from 'sequelize';
 
-class DeliveryMen extends Model {
+class DeliveryMan extends Model {
   static init(sequelize) {
     super.init(
       {
         name: Sequelize.STRING,
-        avatar_id: Sequelize.STRING,
         email: Sequelize.STRING,
       },
       {
@@ -14,6 +13,10 @@ class DeliveryMen extends Model {
     );
     return this;
   }
+
+  static associate(models) {
+    this.belongsTo(models.File, { foreignKey: 'avatar_id' });
+  }
 }
 
-export default DeliveryMen;
+export default DeliveryMan;
