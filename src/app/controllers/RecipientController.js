@@ -42,7 +42,9 @@ class RecipientController {
     const recipient = await Recipient.findByPk(id);
 
     if (!recipient) {
-      return res.status(400).json({ error: 'Destinatário enviado Inválido' });
+      return res
+        .status(400)
+        .json({ error: 'Id do destinatário enviado é inválido' });
     }
 
     const recipientRes = await recipient.update(req.body);
@@ -58,13 +60,15 @@ class RecipientController {
     const recipient = await Recipient.findByPk(id);
 
     if (!recipient) {
-      return res.status(400).json({ error: 'Destinatário enviado Inválido' });
+      return res
+        .status(400)
+        .json({ error: 'Id do destinatário enviado é inválido' });
     }
 
     await recipient.destroy();
 
     return res.json({
-      message: 'Destinatário deletado com sucesso',
+      message: 'Destinatário excluído com sucesso',
     });
   }
 
@@ -74,7 +78,9 @@ class RecipientController {
     const recipient = await Recipient.findByPk(id);
 
     if (!recipient) {
-      return res.status(400).json({ error: 'Destinatário enviado Inválido' });
+      return res
+        .status(400)
+        .json({ error: 'Id do destinatário enviado é inválido' });
     }
 
     return res.json({

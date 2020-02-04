@@ -62,7 +62,7 @@ class DeliveryManController {
     await deliveryMan.destroy();
 
     return res.json({
-      message: 'Entregador deletado com sucesso',
+      message: 'Entregador excluído com sucesso',
     });
   }
 
