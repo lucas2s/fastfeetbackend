@@ -88,7 +88,7 @@ class OrderController {
       where: {
         canceled_at: null,
       },
-      order: ['created_at', 'DESC'],
+      order: [['created_at', 'DESC']],
       attributes: ['id', 'product', 'start_date', 'end_date'],
       limit: 20,
       offset: (page - 1) * 20,
