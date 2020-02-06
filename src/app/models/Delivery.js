@@ -1,6 +1,7 @@
 import Sequelize, { Model } from 'sequelize';
+import { isBefore } from 'date-fns';
 
-class Order extends Model {
+class Delivery extends Model {
   static init(sequelize) {
     super.init(
       {
@@ -8,6 +9,18 @@ class Order extends Model {
         canceled_at: Sequelize.DATE,
         start_date: Sequelize.DATE,
         end_date: Sequelize.DATE,
+        canceled: {
+          type: Sequelize.VIRTUAL(Sequelize.BOOLEAN, ['canceled_at']),
+          get() {
+            return isBefore(this.get('canceled_at'), new Date());
+          },
+        },
+        delivered: {
+          type: Sequelize.VIRTUAL(Sequelize.BOOLEAN, ['end_date']),
+          get() {
+            return isBefore(this.get('end_date'), new Date());
+          },
+        },
       },
       {
         sequelize,
@@ -32,4 +45,4 @@ class Order extends Model {
   }
 }
 
-export default Order;
+export default Delivery;

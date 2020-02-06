@@ -1,10 +1,10 @@
 import * as Yup from 'yup';
-import Order from '../models/Order';
+import Delivery from '../models/Delivery';
 import File from '../models/File';
 import DeliveryMan from '../models/DeliveryMan';
 import Recipient from '../models/Recipient';
 
-class OrderController {
+class DeliveryController {
   async store(req, res) {
     const schema = Yup.object().shape({
       product: Yup.string().required(),
@@ -16,10 +16,10 @@ class OrderController {
       return res.status(400).json({ error: 'Falha na validação dos campos' });
     }
 
-    const order = await Order.create(req.body);
+    const delivery = await Delivery.create(req.body);
 
     return res.json({
-      order,
+      delivery,
     });
   }
 
@@ -38,43 +38,43 @@ class OrderController {
 
     const { id } = req.params;
 
-    const order = await Order.findByPk(id);
+    const delivery = await Delivery.findByPk(id);
 
-    if (!order) {
+    if (!delivery) {
       return res
         .status(400)
         .json({ error: 'Id da encomenda enviado é inválido' });
     }
 
-    if (order.canceled_at) {
+    if (delivery.canceled_at) {
       return res.status(400).json({ error: 'Encomenda está cancelada' });
     }
 
-    const orderRes = await order.update(req.body);
+    const deliveryRes = await delivery.update(req.body);
 
     return res.json({
-      orderRes,
+      deliveryRes,
     });
   }
 
   async delete(req, res) {
     const { id } = req.params;
 
-    const order = await Order.findByPk(id);
+    const delivery = await Delivery.findByPk(id);
 
-    if (!order) {
+    if (!delivery) {
       return res
         .status(400)
         .json({ error: 'Id da encomenda enviado é inválido' });
     }
 
-    if (order.canceled_at) {
+    if (delivery.canceled_at) {
       return res.status(400).json({ error: 'Encomenda já está cancelada' });
     }
 
-    order.canceled_at = new Date();
+    delivery.canceled_at = new Date();
 
-    await order.save();
+    await delivery.save();
 
     return res.json({
       message: 'Encomenda cancelada com sucesso',
@@ -84,11 +84,11 @@ class OrderController {
   async index(req, res) {
     const { page = 1 } = req.query;
 
-    const orders = await Order.findAll({
+    const deliverys = await Delivery.findAll({
       where: {
         canceled_at: null,
       },
-      order: [['created_at', 'DESC']],
+      delivery: [['created_at', 'DESC']],
       attributes: ['id', 'product', 'start_date', 'end_date'],
       limit: 20,
       offset: (page - 1) * 20,
@@ -119,16 +119,16 @@ class OrderController {
       ],
     });
 
-    if (orders.length < 1) {
+    if (deliverys.length < 1) {
       return res
         .status(400)
         .json({ error: 'Não foi encontrado nenhuma encomenda' });
     }
 
     return res.json({
-      orders,
+      deliverys,
     });
   }
 }
 
-export default new OrderController();
+export default new DeliveryController();
