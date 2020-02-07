@@ -1,5 +1,5 @@
 import * as Yup from 'yup';
-
+import { Op } from 'sequelize';
 import { zonedTimeToUtc } from 'date-fns-tz';
 import { set, isAfter, parseISO, isBefore } from 'date-fns';
 
@@ -131,8 +131,8 @@ class DeliveryDeliveryManController {
     const deliverys = await Delivery.findAll({
       where: {
         canceled_at: null,
-        end_date: delivered ? !null : null,
         deliveryman_id: id,
+        end_date: delivered ? { [Op.ne]: null } : null,
       },
       Delivery: [['created_at', 'DESC']],
       attributes: [

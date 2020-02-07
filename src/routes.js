@@ -26,10 +26,13 @@ routes.put('/deliveryman/:id', DeliveryManController.update);
 routes.delete('/deliveryman/:id', DeliveryManController.delete);
 routes.get('/deliveryman', DeliveryManController.index);
 
-routes.post('/deliverys', DeliveryController.store);
-routes.put('/deliverys/:id', DeliveryController.update);
-routes.delete('/deliverys/:id', DeliveryController.delete);
-routes.get('/deliverys', DeliveryController.index);
+routes.post('/deliveries', DeliveryController.store);
+routes.put('/deliveries/:id', DeliveryController.update);
+routes.delete('/deliveries/:id', DeliveryController.delete);
+routes.get('/deliveries', DeliveryController.index);
+
+routes.get('/deliveries/problems', DeliveryController.indexProblem);
+routes.get('/deliveries/:id/problems', DeliveryController.indexByIdProblem);
 
 routes.post('/files', upload.single('file'), FileController.store);
 

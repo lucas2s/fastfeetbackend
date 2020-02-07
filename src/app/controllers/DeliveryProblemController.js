@@ -31,28 +31,17 @@ class DeliveryProblemController {
 
   async index(req, res) {
     const { page = 1 } = req.query;
-    const { id } = req.params;
-
-    const delivery = await Delivery.findByPk(id);
-
-    if (!delivery) {
-      return res
-        .status(400)
-        .json({ error: 'Id da encomenda enviado é inválido' });
-    }
 
     const deliveryProblems = await DeliveryProblem.findAll({
-      where: {
-        delivery_id: id,
-      },
-      limit: 10,
-      offset: (page - 1) * 10,
+      delivery: [['created_at', 'DESC']],
+      limit: 20,
+      offset: (page - 1) * 20,
     });
 
     if (deliveryProblems.length < 1) {
       return res
         .status(400)
-        .json({ error: 'Não foi encontrado nenhum problema na encomenda' });
+        .json({ error: 'Não foi encontrado nenhum problema' });
     }
 
     return res.json({
