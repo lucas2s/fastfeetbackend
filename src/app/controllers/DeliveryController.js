@@ -1,11 +1,12 @@
 import * as Yup from 'yup';
 
-import { Op } from 'sequelize';
 import Delivery from '../models/Delivery';
 import File from '../models/File';
 import DeliveryMan from '../models/DeliveryMan';
 import Recipient from '../models/Recipient';
-import DeliveryProblem from '../models/DeliveryProblem';
+import CreateDeliveryMail from '../jobs/CreateDeliveryMail';
+import CancelDeliveryMail from '../jobs/CancelDeliveryMail';
+import Queue from '../../lib/Queue';
 
 class DeliveryController {
   async store(req, res) {
@@ -19,7 +20,27 @@ class DeliveryController {
       return res.status(400).json({ error: 'Falha na validação dos campos' });
     }
 
+    const { recipient_id, deliveryman_id } = req.body;
+
+    const recipient = await Recipient.findByPk(recipient_id);
+
+    if (!recipient) {
+      return res.status(400).json({ error: 'ID do destinatário inválido' });
+    }
+
+    const deliveryman = await DeliveryMan.findByPk(deliveryman_id);
+
+    if (!deliveryman) {
+      return res.status(400).json({ error: 'ID do entregador inválido' });
+    }
+
     const delivery = await Delivery.create(req.body);
+
+    await Queue.add(CreateDeliveryMail.key, {
+      delivery,
+      recipient,
+      deliveryman,
+    });
 
     return res.json({
       delivery,
@@ -75,9 +96,16 @@ class DeliveryController {
       return res.status(400).json({ error: 'Encomenda já está cancelada' });
     }
 
+    const deliveryman = await DeliveryMan.findByPk(delivery.deliveryman_id);
+
     delivery.canceled_at = new Date();
 
     await delivery.save();
+
+    await Queue.add(CancelDeliveryMail.key, {
+      delivery,
+      deliveryman,
+    });
 
     return res.json({
       message: 'Encomenda cancelada com sucesso',
@@ -130,69 +158,6 @@ class DeliveryController {
 
     return res.json({
       deliverys,
-    });
-  }
-
-  async indexProblem(req, res) {
-    const { page = 1 } = req.query;
-
-    const deliverys = await Delivery.findAll({
-      where: {
-        start_date: {
-          [Op.ne]: null,
-        },
-        canceled_at: null,
-        end_date: null,
-      },
-      attributes: ['id', 'product', 'start_date', 'end_date'],
-      limit: 20,
-      offset: (page - 1) * 20,
-      include: [DeliveryProblem],
-    });
-
-    if (deliverys.length < 1) {
-      return res
-        .status(400)
-        .json({ error: 'Não foi encontrado nenhuma encomenda com problema' });
-    }
-
-    const deliverysRes = deliverys.filter(
-      delivery => delivery.DeliveryProblems.length > 0
-    );
-
-    if (deliverysRes.length < 1) {
-      return res
-        .status(400)
-        .json({ error: 'Não foi encontrado nenhuma encomenda com problema' });
-    }
-
-    return res.json({
-      deliverysRes,
-    });
-  }
-
-  async indexByIdProblem(req, res) {
-    const { id } = req.params;
-    const { page = 1 } = req.query;
-
-    const delivery = await Delivery.findByPk(id, {
-      include: { model: DeliveryProblem, limit: 10, offset: (page - 1) * 10 },
-    });
-
-    if (!delivery) {
-      return res
-        .status(400)
-        .json({ error: 'Id da encomenda enviado é inválido' });
-    }
-
-    if (delivery.DeliveryProblems.length > 0) {
-      return res
-        .status(400)
-        .json({ error: 'Não foi encontrado nenhum problema na encomenda' });
-    }
-
-    return res.json({
-      delivery,
     });
   }
 }

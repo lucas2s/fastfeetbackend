@@ -39,12 +39,12 @@ class DeliveryDeliveryManController {
 
     const { start_date } = req.body;
 
-    const { startTime } = set(new Date(), {
+    const startTime = set(new Date(), {
       hours: 8,
       minutes: 0,
       seconds: 0,
     });
-    const { endTime } = set(new Date(), {
+    const endTime = set(new Date(), {
       hours: 18,
       minutes: 0,
       seconds: 0,
@@ -55,13 +55,13 @@ class DeliveryDeliveryManController {
     if (isBefore(startDate, startTime)) {
       return res
         .status(400)
-        .json({ error: 'Data/Hora retirada menor do que a permitida' });
+        .json({ error: 'Data e hora retirada menor do que a permitida' });
     }
 
     if (isAfter(startDate, endTime)) {
       return res
         .status(400)
-        .json({ error: 'Data/Hora retirada maior do que a permitida' });
+        .json({ error: 'Data e hora retirada maior do que a permitida' });
     }
 
     const deliveryRes = await delivery.update({ start_date: startDate });
@@ -74,6 +74,7 @@ class DeliveryDeliveryManController {
   async updateEnd(req, res) {
     const schema = Yup.object().shape({
       end_date: Yup.date().required(),
+      signature_id: Yup.number().required(),
     });
 
     if (!(await schema.isValid(req.body))) {
@@ -105,7 +106,19 @@ class DeliveryDeliveryManController {
 
     const endDate = zonedTimeToUtc(parseISO(end_date), timeSP);
 
-    const deliveryRes = await Delivery.update({
+    if (isBefore(endDate, delivery.start_date)) {
+      return res
+        .status(400)
+        .json({ error: 'Data e hora entrega menor do que a retirada' });
+    }
+
+    const signature = await File.findByPk(signature_id);
+
+    if (!signature) {
+      return res.status(400).json({ error: 'ID da assinatura inválido' });
+    }
+
+    const deliveryRes = await delivery.update({
       end_date: endDate,
       signature_id,
     });

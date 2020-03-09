@@ -8,11 +8,26 @@ import RecipientController from './app/controllers/RecipientController';
 import DeliveryManController from './app/controllers/DeliveryManController';
 import DeliveryController from './app/controllers/DeliveryController';
 import FileController from './app/controllers/FileController';
+import DeliveryDeliveryManController from './app/controllers/DeliveryDeliveryManController';
+import DeliveryProblemController from './app/controllers/DeliveryProblemController';
+import DeliveryDeliveryProblemController from './app/controllers/DeliveryDeliveryProblemController';
 
 const routes = new Router();
 const upload = multer(multerConfig);
 
 routes.post('/sessions', SessionController.store);
+routes.get('/deliveryman/:id/deliveries', DeliveryDeliveryManController.index);
+routes.put(
+  '/deliveryman/deliveries/:id/start',
+  DeliveryDeliveryManController.updateStart
+);
+routes.put(
+  '/deliveryman/deliveries/:id/end',
+  DeliveryDeliveryManController.updateEnd
+);
+routes.post('/delivery/:id/problems', DeliveryProblemController.store);
+
+// ---------------------------------------------------------------------------------
 
 routes.use(authMiddleware);
 
@@ -31,8 +46,14 @@ routes.put('/deliveries/:id', DeliveryController.update);
 routes.delete('/deliveries/:id', DeliveryController.delete);
 routes.get('/deliveries', DeliveryController.index);
 
-routes.get('/deliveries/problems', DeliveryController.indexProblem);
-routes.get('/deliveries/:id/problems', DeliveryController.indexByIdProblem);
+routes.get(
+  '/deliveries/problems',
+  DeliveryDeliveryProblemController.indexProblem
+);
+routes.get(
+  '/deliveries/:id/problems',
+  DeliveryDeliveryProblemController.indexByIdProblem
+);
 
 routes.post('/files', upload.single('file'), FileController.store);
 
