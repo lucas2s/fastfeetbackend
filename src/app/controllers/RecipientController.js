@@ -4,6 +4,7 @@ import Recipient from '../models/Recipient';
 class RecipientController {
   async store(req, res) {
     const schema = Yup.object().shape({
+      name: Yup.string().required(),
       street: Yup.string().required(),
       number: Yup.number().required(),
       complement: Yup.string().required(),
@@ -25,6 +26,7 @@ class RecipientController {
 
   async update(req, res) {
     const schema = Yup.object().shape({
+      name: Yup.string(),
       street: Yup.string(),
       number: Yup.number(),
       complement: Yup.string(),

@@ -14,6 +14,7 @@ class CreateDeliveryMail {
       template: 'CreateDeliveryMail',
       context: {
         deliveryman: deliveryman.name,
+        name: recipient.name,
         street: recipient.street,
         number: recipient.number,
         complement: recipient.complement,
