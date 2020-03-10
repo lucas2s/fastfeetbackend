@@ -26,6 +26,7 @@ routes.put(
   DeliveryDeliveryManController.updateEnd
 );
 routes.post('/delivery/:id/problems', DeliveryProblemController.store);
+routes.post('/files', upload.single('file'), FileController.store);
 
 // ---------------------------------------------------------------------------------
 
@@ -59,7 +60,5 @@ routes.delete(
   '/problem/:id/cancel-delivery',
   DeliveryDeliveryProblemController.delete
 );
-
-routes.post('/files', upload.single('file'), FileController.store);
 
 export default routes;
