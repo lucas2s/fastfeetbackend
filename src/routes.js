@@ -36,10 +36,12 @@ routes.post('/recipients', RecipientController.store);
 routes.put('/recipients/:id', RecipientController.update);
 routes.delete('/recipients/:id', RecipientController.delete);
 routes.get('/recipients/:id', RecipientController.indexById);
+routes.get('/recipients', RecipientController.index);
 
 routes.post('/deliveryman', DeliveryManController.store);
 routes.put('/deliveryman/:id', DeliveryManController.update);
 routes.delete('/deliveryman/:id', DeliveryManController.delete);
+routes.get('/deliveryman/:id', DeliveryManController.indexById);
 routes.get('/deliveryman', DeliveryManController.index);
 
 routes.post('/deliveries', DeliveryController.store);

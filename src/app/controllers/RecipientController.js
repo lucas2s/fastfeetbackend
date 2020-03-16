@@ -1,4 +1,6 @@
 import * as Yup from 'yup';
+import { Op } from 'sequelize';
+
 import Recipient from '../models/Recipient';
 
 class RecipientController {
@@ -87,6 +89,30 @@ class RecipientController {
 
     return res.json({
       recipient,
+    });
+  }
+
+  async index(req, res) {
+    const { name, page = 1 } = req.query;
+
+    const recipients = await Recipient.findAll({
+      where: {
+        name: {
+          [Op.iLike]: `%${name}%`,
+        },
+      },
+      limit: 20,
+      offset: (page - 1) * 20,
+    });
+
+    if (!recipients.length < 1) {
+      return res
+        .status(400)
+        .json({ error: 'Id do destinatário enviado é inválido' });
+    }
+
+    return res.json({
+      recipients,
     });
   }
 }

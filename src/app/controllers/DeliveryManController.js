@@ -1,4 +1,6 @@
 import * as Yup from 'yup';
+import { Op } from 'sequelize';
+
 import DeliveryMan from '../models/DeliveryMan';
 
 class DeliveryManController {
@@ -66,10 +68,31 @@ class DeliveryManController {
     });
   }
 
+  async indexById(req, res) {
+    const { id } = req.params;
+
+    const deliveryMan = await DeliveryMan.findByPk(id);
+
+    if (!deliveryMan) {
+      return res
+        .status(400)
+        .json({ error: 'Id do entregador enviado é inválido' });
+    }
+
+    return res.json({
+      deliveryMan,
+    });
+  }
+
   async index(req, res) {
-    const { page = 1 } = req.query;
+    const { name, page = 1 } = req.query;
 
     const deliveryMan = await DeliveryMan.findAll({
+      where: {
+        name: {
+          [Op.iLike]: `%${name}%`,
+        },
+      },
       limit: 10,
       offset: (page - 1) * 10,
     });
