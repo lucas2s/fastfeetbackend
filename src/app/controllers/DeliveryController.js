@@ -142,6 +142,7 @@ class DeliveryController {
           as: 'recipient',
           attributes: [
             'id',
+            'name',
             'street',
             'number',
             'complement',
