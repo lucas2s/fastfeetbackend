@@ -27,6 +27,7 @@ routes.put(
 );
 routes.post('/delivery/:id/problems', DeliveryProblemController.store);
 routes.post('/files', upload.single('file'), FileController.store);
+routes.get('/', (req, res) => res.send('ok'));
 
 // ---------------------------------------------------------------------------------
 

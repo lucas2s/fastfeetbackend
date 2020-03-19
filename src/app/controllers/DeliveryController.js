@@ -130,6 +130,7 @@ class DeliveryController {
       attributes: ['id', 'product', 'start_date', 'end_date', 'canceled_at'],
       limit: 20,
       offset: (page - 1) * 20,
+      order: ['created_at'],
       include: [
         {
           model: File,
