@@ -154,6 +154,13 @@ class DeliveryController {
           model: DeliveryMan,
           as: 'deliveryman',
           attributes: ['name', 'email'],
+          include: [
+            {
+              model: File,
+              as: 'avatar',
+              attributes: ['path'],
+            },
+          ],
         },
       ],
     });
