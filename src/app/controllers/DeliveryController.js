@@ -158,7 +158,7 @@ class DeliveryController {
             {
               model: File,
               as: 'avatar',
-              attributes: ['path'],
+              attributes: ['path', 'url'],
             },
           ],
         },
