@@ -98,7 +98,7 @@ class DeliveryController {
     }
 
     if (delivery.canceled_at) {
-      return res.status(400).json({ error: 'Encomenda está cancelada' });
+      return res.status(400).json({ error: 'Encomenda já está cancelada' });
     }
 
     const deliveryman = await DeliveryMan.findByPk(delivery.deliveryman_id);
