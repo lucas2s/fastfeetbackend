@@ -93,7 +93,7 @@ class RecipientController {
   }
 
   async index(req, res) {
-    const { name, page = 1 } = req.query;
+    const { name = '', page = 1 } = req.query;
 
     const recipients = await Recipient.findAll({
       where: {
@@ -105,10 +105,10 @@ class RecipientController {
       offset: (page - 1) * 20,
     });
 
-    if (!recipients.length < 1) {
+    if (recipients.length < 1) {
       return res
         .status(400)
-        .json({ error: 'Id do destinatário enviado é inválido' });
+        .json({ error: 'Não foi encontrado nenhum destinatário' });
     }
 
     return res.json({

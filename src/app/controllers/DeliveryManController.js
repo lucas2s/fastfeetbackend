@@ -85,9 +85,9 @@ class DeliveryManController {
   }
 
   async index(req, res) {
-    const { name, page = 1 } = req.query;
+    const { name = '', page = 1 } = req.query;
 
-    const deliveryMan = await DeliveryMan.findAll({
+    const deliveryMans = await DeliveryMan.findAll({
       where: {
         name: {
           [Op.iLike]: `%${name}%`,
@@ -97,14 +97,14 @@ class DeliveryManController {
       offset: (page - 1) * 10,
     });
 
-    if (deliveryMan.length < 1) {
+    if (deliveryMans.length < 1) {
       return res
         .status(400)
         .json({ error: 'Não foi encontrado nenhum entregador' });
     }
 
     return res.json({
-      deliveryMan,
+      deliveryMans,
     });
   }
 }

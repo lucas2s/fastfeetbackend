@@ -118,7 +118,7 @@ class DeliveryController {
   }
 
   async index(req, res) {
-    const { product, page = 1 } = req.query;
+    const { product = '', page = 1 } = req.query;
 
     const deliverys = await Delivery.findAll({
       where: {
@@ -174,6 +174,56 @@ class DeliveryController {
 
     return res.json({
       deliverys,
+    });
+  }
+
+  async indexById(req, res) {
+    const { id } = req.params;
+
+    const delivery = await Delivery.findByPk(id, {
+      attributes: ['id', 'product', 'start_date', 'end_date', 'canceled_at'],
+      order: ['created_at'],
+      include: [
+        {
+          model: File,
+          as: 'signature',
+          attributes: ['id', 'name', 'path'],
+        },
+        {
+          model: Recipient,
+          as: 'recipient',
+          attributes: [
+            'id',
+            'name',
+            'street',
+            'number',
+            'complement',
+            'state',
+            'city',
+            'zipcode',
+          ],
+        },
+        {
+          model: DeliveryMan,
+          as: 'deliveryman',
+          attributes: ['name', 'email'],
+          include: [
+            {
+              model: File,
+              as: 'avatar',
+              attributes: ['path', 'url'],
+            },
+          ],
+        },
+      ],
+    });
+
+    if (!delivery) {
+      return res.status(400).json({ error: 'Id da encomenda inválido' });
+    }
+
+    return res.json({
+      delivery,
     });
   }
 }
