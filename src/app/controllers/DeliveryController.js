@@ -154,7 +154,7 @@ class DeliveryController {
         {
           model: DeliveryMan,
           as: 'deliveryman',
-          attributes: ['name', 'email'],
+          attributes: ['id', 'name', 'email'],
           include: [
             {
               model: File,
@@ -206,7 +206,7 @@ class DeliveryController {
         {
           model: DeliveryMan,
           as: 'deliveryman',
-          attributes: ['name', 'email'],
+          attributes: ['id', 'name', 'email'],
           include: [
             {
               model: File,
