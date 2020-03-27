@@ -182,7 +182,6 @@ class DeliveryController {
 
     const delivery = await Delivery.findByPk(id, {
       attributes: ['id', 'product', 'start_date', 'end_date', 'canceled_at'],
-      order: ['created_at'],
       include: [
         {
           model: File,

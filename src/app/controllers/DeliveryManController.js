@@ -2,6 +2,7 @@ import * as Yup from 'yup';
 import { Op } from 'sequelize';
 
 import DeliveryMan from '../models/DeliveryMan';
+import File from '../models/File';
 
 class DeliveryManController {
   async store(req, res) {
@@ -71,7 +72,15 @@ class DeliveryManController {
   async indexById(req, res) {
     const { id } = req.params;
 
-    const deliveryMan = await DeliveryMan.findByPk(id);
+    const deliveryMan = await DeliveryMan.findByPk(id, {
+      include: [
+        {
+          model: File,
+          as: 'avatar',
+          attributes: ['path', 'url'],
+        },
+      ],
+    });
 
     if (!deliveryMan) {
       return res
@@ -93,8 +102,16 @@ class DeliveryManController {
           [Op.iLike]: `%${name}%`,
         },
       },
+      order: ['created_at'],
       limit: 10,
       offset: (page - 1) * 10,
+      include: [
+        {
+          model: File,
+          as: 'avatar',
+          attributes: ['path', 'url'],
+        },
+      ],
     });
 
     if (deliveryMans.length < 1) {
