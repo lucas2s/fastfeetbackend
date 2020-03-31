@@ -77,7 +77,7 @@ class DeliveryManController {
         {
           model: File,
           as: 'avatar',
-          attributes: ['path', 'url'],
+          attributes: ['id', 'path', 'url'],
         },
       ],
     });
@@ -109,7 +109,7 @@ class DeliveryManController {
         {
           model: File,
           as: 'avatar',
-          attributes: ['path', 'url'],
+          attributes: ['id', 'path', 'url'],
         },
       ],
     });
