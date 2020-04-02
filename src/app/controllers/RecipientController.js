@@ -101,6 +101,7 @@ class RecipientController {
           [Op.iLike]: `%${name}%`,
         },
       },
+      order: ['created_at'],
       limit: 20,
       offset: (page - 1) * 20,
     });
