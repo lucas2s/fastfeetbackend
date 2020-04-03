@@ -16,16 +16,26 @@ const routes = new Router();
 const upload = multer(multerConfig);
 
 routes.post('/sessions', SessionController.store);
-routes.get('/deliveryman/:id/deliveries', DeliveryDeliveryManController.index);
+routes.get(
+  '/deliveryman/:id/delivery/:deliveryid',
+  DeliveryDeliveryManController.index
+);
+
 routes.put(
-  '/deliveryman/deliveries/:id/start',
+  '/deliveryman-start/:id/delivery/:deliveryid',
   DeliveryDeliveryManController.updateStart
 );
+
 routes.put(
-  '/deliveryman/deliveries/:id/end',
+  '/deliveryman-end/:id/delivery/:deliveryid',
   DeliveryDeliveryManController.updateEnd
 );
-routes.post('/delivery/:id/problems', DeliveryProblemController.store);
+
+routes.post(
+  '/deliveryman/:id/delivery/:deliveryid/problems',
+  DeliveryProblemController.store
+);
+
 routes.post('/files', upload.single('file'), FileController.store);
 routes.get('/', (req, res) => res.send('ok'));
 
@@ -52,16 +62,16 @@ routes.get('/deliveries/:id', DeliveryController.indexById);
 routes.get('/deliveries', DeliveryController.index);
 
 routes.get(
-  '/deliveries/problems',
+  '/problems/deliveries',
   DeliveryDeliveryProblemController.indexProblem
 );
 routes.get(
-  '/deliveries/:id/problems',
+  '/problems/:id/deliveries',
   DeliveryDeliveryProblemController.indexByIdProblem
 );
 
 routes.delete(
-  '/problem/:id/cancel-delivery',
+  '/deliveryproblem/:id/cancel-delivery',
   DeliveryDeliveryProblemController.delete
 );
 

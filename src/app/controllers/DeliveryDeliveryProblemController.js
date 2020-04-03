@@ -17,7 +17,8 @@ class DeliveryDeliveryProblemController {
         canceled_at: null,
         end_date: null,
       },
-      attributes: ['id', 'product', 'start_date', 'end_date'],
+      order: ['created_at'],
+      attributes: ['id', 'product', 'start_date', 'end_date', 'created_at'],
       limit: 20,
       offset: (page - 1) * 20,
       include: [DeliveryProblem],
@@ -29,18 +30,18 @@ class DeliveryDeliveryProblemController {
         .json({ error: 'Não foi encontrado nenhuma encomenda com problema' });
     }
 
-    const deliverysRes = deliverys.filter(
+    const deliverysProblems = deliverys.filter(
       delivery => delivery.DeliveryProblems.length > 0
     );
 
-    if (deliverysRes.length < 1) {
+    if (deliverysProblems.length < 1) {
       return res
         .status(400)
         .json({ error: 'Não foi encontrado nenhuma encomenda com problema' });
     }
 
     return res.json({
-      deliverysRes,
+      deliverysProblems,
     });
   }
 

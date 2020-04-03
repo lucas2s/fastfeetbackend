@@ -1,7 +1,14 @@
 import * as Yup from 'yup';
 import { Op } from 'sequelize';
 import { zonedTimeToUtc } from 'date-fns-tz';
-import { set, isAfter, parseISO, isBefore } from 'date-fns';
+import {
+  set,
+  isAfter,
+  parseISO,
+  isBefore,
+  startOfDay,
+  endOfDay,
+} from 'date-fns';
 
 import Delivery from '../models/Delivery';
 import File from '../models/File';
@@ -13,20 +20,26 @@ const timeSP = 'America/Sao_Paulo';
 class DeliveryDeliveryManController {
   async updateStart(req, res) {
     const schema = Yup.object().shape({
-      start_date: Yup.date().required(),
+      start_date: Yup.date(),
     });
 
     if (!(await schema.isValid(req.body))) {
       return res.status(400).json({ error: 'Falha na validação dos campos' });
     }
 
-    const { id } = req.params;
-    const delivery = await Delivery.findByPk(id);
+    const { id, deliveryid } = req.params;
+    const delivery = await Delivery.findByPk(deliveryid);
 
     if (!delivery) {
       return res
         .status(400)
         .json({ error: 'Id da encomenda enviado é inválido' });
+    }
+
+    if (delivery.deliveryman_id !== Number(id)) {
+      return res
+        .status(400)
+        .json({ error: 'Encomenda pertence a outro entregador' });
     }
 
     if (delivery.start_date) {
@@ -38,6 +51,13 @@ class DeliveryDeliveryManController {
     }
 
     const { start_date } = req.body;
+    let startDate;
+
+    if (!start_date) {
+      startDate = new Date();
+    } else {
+      startDate = zonedTimeToUtc(parseISO(start_date), timeSP);
+    }
 
     const startTime = set(new Date(), {
       hours: 8,
@@ -49,8 +69,6 @@ class DeliveryDeliveryManController {
       minutes: 0,
       seconds: 0,
     });
-
-    const startDate = zonedTimeToUtc(parseISO(start_date), timeSP);
 
     if (isBefore(startDate, startTime)) {
       return res
@@ -64,6 +82,21 @@ class DeliveryDeliveryManController {
         .json({ error: 'Data e hora retirada maior do que a permitida' });
     }
 
+    const countDeliveries = await Delivery.count({
+      where: {
+        deliveryman_id: id,
+        start_date: {
+          [Op.between]: [startOfDay(startDate), endOfDay(startDate)],
+        },
+      },
+    });
+
+    if (countDeliveries >= 5) {
+      return res
+        .status(400)
+        .json({ error: 'Entregador já realizou 5 retiradas' });
+    }
+
     const deliveryRes = await delivery.update({ start_date: startDate });
 
     return res.json({
@@ -73,7 +106,7 @@ class DeliveryDeliveryManController {
 
   async updateEnd(req, res) {
     const schema = Yup.object().shape({
-      end_date: Yup.date().required(),
+      end_date: Yup.date(),
       signature_id: Yup.number().required(),
     });
 
@@ -103,8 +136,13 @@ class DeliveryDeliveryManController {
     }
 
     const { end_date, signature_id } = req.body;
+    let endDate;
 
-    const endDate = zonedTimeToUtc(parseISO(end_date), timeSP);
+    if (!end_date) {
+      endDate = new Date();
+    } else {
+      endDate = zonedTimeToUtc(parseISO(end_date), timeSP);
+    }
 
     if (isBefore(endDate, delivery.start_date)) {
       return res

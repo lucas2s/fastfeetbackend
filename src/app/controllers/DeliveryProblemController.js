@@ -12,14 +12,20 @@ class DeliveryProblemController {
       return res.status(400).json({ error: 'Falha na validação dos campos' });
     }
 
-    const { id } = req.params;
+    const { id, deliveryid } = req.params;
     const { description } = req.body;
-    const delivery = await Delivery.findByPk(id);
+    const delivery = await Delivery.findByPk(deliveryid);
 
     if (!delivery) {
       return res
         .status(400)
         .json({ error: 'Id da encomenda enviado é inválido' });
+    }
+
+    if (delivery.deliveryman_id !== Number(id)) {
+      return res
+        .status(400)
+        .json({ error: 'Encomenda pertence a outro entregador' });
     }
 
     if (!delivery.start_date) {
@@ -35,7 +41,7 @@ class DeliveryProblemController {
     }
 
     const deliveryProblem = await DeliveryProblem.create({
-      delivery_id: id,
+      delivery_id: deliveryid,
       description,
     });
 
