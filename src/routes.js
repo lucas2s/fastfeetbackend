@@ -70,9 +70,4 @@ routes.get(
   DeliveryDeliveryProblemController.indexByIdProblem
 );
 
-routes.delete(
-  '/deliveryproblem/:id/cancel-delivery',
-  DeliveryDeliveryProblemController.delete
-);
-
 export default routes;

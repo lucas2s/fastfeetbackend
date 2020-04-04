@@ -1,9 +1,6 @@
 import { Op } from 'sequelize';
 import Delivery from '../models/Delivery';
 import DeliveryProblem from '../models/DeliveryProblem';
-import DeliveryMan from '../models/DeliveryMan';
-import CancelDeliveryMail from '../jobs/CancelDeliveryMail';
-import Queue from '../../lib/Queue';
 
 class DeliveryDeliveryProblemController {
   async indexProblem(req, res) {
@@ -67,41 +64,6 @@ class DeliveryDeliveryProblemController {
 
     return res.json({
       delivery,
-    });
-  }
-
-  async delete(req, res) {
-    const { id } = req.params;
-
-    const deliveryProblem = await DeliveryProblem.findByPk(id);
-
-    if (!deliveryProblem) {
-      return res.status(400).json({ error: 'Id do problema é inválido' });
-    }
-
-    const delivery = await Delivery.findByPk(deliveryProblem.id);
-
-    if (delivery.end_date) {
-      return res.status(400).json({ error: 'Encomenda já está encerrada' });
-    }
-
-    if (delivery.canceled_at) {
-      return res.status(400).json({ error: 'Encomenda está cancelada' });
-    }
-
-    const deliveryman = await DeliveryMan.findByPk(delivery.deliveryman_id);
-
-    delivery.canceled_at = new Date();
-
-    await delivery.save();
-
-    await Queue.add(CancelDeliveryMail.key, {
-      delivery,
-      deliveryman,
-    });
-
-    return res.json({
-      message: 'Encomenda cancelada com sucesso',
     });
   }
 }
