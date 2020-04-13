@@ -193,6 +193,7 @@ class DeliveryDeliveryManController {
         'end_date',
         'canceled',
         'delivered',
+        'created_at',
       ],
       limit: 20,
       offset: (page - 1) * 20,
@@ -222,12 +223,6 @@ class DeliveryDeliveryManController {
         },
       ],
     });
-
-    if (deliverys.length < 1) {
-      return res
-        .status(400)
-        .json({ error: 'Não foi encontrado nenhuma encomenda' });
-    }
 
     return res.json({
       deliverys,
