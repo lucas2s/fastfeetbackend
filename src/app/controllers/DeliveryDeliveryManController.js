@@ -167,23 +167,16 @@ class DeliveryDeliveryManController {
   }
 
   async index(req, res) {
-    const schema = Yup.object().shape({
-      delivered: Yup.boolean(),
-    });
-
-    if (!(await schema.isValid(req.body))) {
-      return res.status(400).json({ error: 'Falha na validação dos campos' });
-    }
-
-    const { page = 1 } = req.query;
+    const { page = 1, delivered } = req.query;
     const { id } = req.params;
-    const { delivered } = req.body;
+
+    const deliveredbool = delivered === 'true';
 
     const deliverys = await Delivery.findAll({
       where: {
         canceled_at: null,
         deliveryman_id: id,
-        end_date: delivered ? { [Op.ne]: null } : null,
+        end_date: deliveredbool ? { [Op.ne]: null } : null,
       },
       Delivery: [['created_at', 'DESC']],
       attributes: [
