@@ -201,6 +201,7 @@ class DeliveryDeliveryManController {
           as: 'recipient',
           attributes: [
             'id',
+            'name',
             'street',
             'number',
             'complement',
