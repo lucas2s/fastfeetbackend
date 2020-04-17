@@ -70,6 +70,7 @@ class DeliveryDeliveryManController {
       seconds: 0,
     });
 
+    /*
     if (isBefore(startDate, startTime)) {
       return res
         .status(400)
@@ -81,7 +82,7 @@ class DeliveryDeliveryManController {
         .status(400)
         .json({ error: 'Data e hora retirada maior do que a permitida' });
     }
-
+    */
     const countDeliveries = await Delivery.count({
       where: {
         deliveryman_id: id,
@@ -178,7 +179,6 @@ class DeliveryDeliveryManController {
         deliveryman_id: id,
         end_date: deliveredbool ? { [Op.ne]: null } : null,
       },
-      Delivery: [['created_at', 'DESC']],
       attributes: [
         'id',
         'product',
@@ -188,6 +188,7 @@ class DeliveryDeliveryManController {
         'delivered',
         'created_at',
       ],
+      order: ['created_at'],
       limit: 20,
       offset: (page - 1) * 20,
       include: [

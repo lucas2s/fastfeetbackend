@@ -56,14 +56,10 @@ class DeliveryDeliveryProblemController {
         .json({ error: 'Id da encomenda enviado é inválido' });
     }
 
-    if (delivery.DeliveryProblems.length < 1) {
-      return res
-        .status(400)
-        .json({ error: 'Não foi encontrado nenhum problema na encomenda' });
-    }
+    const problems = delivery.DeliveryProblems;
 
     return res.json({
-      delivery,
+      problems,
     });
   }
 }

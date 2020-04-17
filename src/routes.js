@@ -35,6 +35,11 @@ routes.post(
 
 routes.get('/deliveryman/:id', DeliveryManController.indexById);
 
+routes.get(
+  '/deliveryproblems/:id',
+  DeliveryDeliveryProblemController.indexByIdProblem
+);
+
 routes.post('/files', upload.single('file'), FileController.store);
 routes.get('/', (req, res) => res.send('ok'));
 
@@ -62,10 +67,6 @@ routes.get('/deliveries', DeliveryController.index);
 routes.get(
   '/problems/deliveries',
   DeliveryDeliveryProblemController.indexProblem
-);
-routes.get(
-  '/problems/:id/deliveries',
-  DeliveryDeliveryProblemController.indexByIdProblem
 );
 
 export default routes;
