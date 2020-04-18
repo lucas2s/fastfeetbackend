@@ -70,7 +70,6 @@ class DeliveryDeliveryManController {
       seconds: 0,
     });
 
-    /*
     if (isBefore(startDate, startTime)) {
       return res
         .status(400)
@@ -82,7 +81,7 @@ class DeliveryDeliveryManController {
         .status(400)
         .json({ error: 'Data e hora retirada maior do que a permitida' });
     }
-    */
+
     const countDeliveries = await Delivery.count({
       where: {
         deliveryman_id: id,
@@ -115,13 +114,19 @@ class DeliveryDeliveryManController {
       return res.status(400).json({ error: 'Falha na validação dos campos' });
     }
 
-    const { id } = req.params;
-    const delivery = await Delivery.findByPk(id);
+    const { id, deliveryid } = req.params;
+    const delivery = await Delivery.findByPk(deliveryid);
 
     if (!delivery) {
       return res
         .status(400)
         .json({ error: 'Id da encomenda enviado é inválido' });
+    }
+
+    if (delivery.deliveryman_id !== Number(id)) {
+      return res
+        .status(400)
+        .json({ error: 'Encomenda pertence a outro entregador' });
     }
 
     if (!delivery.start_date) {
