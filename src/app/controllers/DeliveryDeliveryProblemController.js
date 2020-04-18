@@ -16,8 +16,8 @@ class DeliveryDeliveryProblemController {
       },
       order: ['created_at'],
       attributes: ['id', 'product', 'start_date', 'end_date', 'created_at'],
-      limit: 20,
-      offset: (page - 1) * 20,
+      limit: 10,
+      offset: (page - 1) * 10,
       include: [DeliveryProblem],
     });
 

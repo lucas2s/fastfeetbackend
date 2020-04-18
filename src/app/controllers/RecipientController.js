@@ -102,8 +102,8 @@ class RecipientController {
         },
       },
       order: ['created_at'],
-      limit: 20,
-      offset: (page - 1) * 20,
+      limit: 10,
+      offset: (page - 1) * 10,
     });
 
     if (recipients.length < 1) {
