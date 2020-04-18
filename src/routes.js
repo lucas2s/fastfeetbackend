@@ -15,7 +15,12 @@ import DeliveryDeliveryProblemController from './app/controllers/DeliveryDeliver
 const routes = new Router();
 const upload = multer(multerConfig);
 
+// ---------------------------------------------------------------------------------
+// Rotas com o ID do deliveryman e sessão
+// ---------------------------------------------------------------------------------
+
 routes.post('/sessions', SessionController.store);
+
 routes.get('/deliveryman/:id/delivery', DeliveryDeliveryManController.index);
 
 routes.put(
@@ -43,6 +48,8 @@ routes.get(
 routes.post('/files', upload.single('file'), FileController.store);
 routes.get('/', (req, res) => res.send('ok'));
 
+// ---------------------------------------------------------------------------------
+// Rotas com autenticação de Token
 // ---------------------------------------------------------------------------------
 
 routes.use(authMiddleware);
