@@ -40,13 +40,7 @@ Este backend será consumido através das aplicações Web e Mobile do FastFeet.
 
 ## 2 - Tecnologias
 
-<p align="center">
-  <a href="https://nodejs.org/">
-    <img
-      alt="Node.js"
-      src="https://nodejs.org/static/images/logo-light.svg"
-      width="100px" />
-</p>
+<p align="center"><img alt="Node.js" src="https://nodejs.org/static/images/logo-light.svg" width="100px" /></p>
 
 O Projeto desenvolvido em NodeJS com aplicação de diversas tecnologias e bibliotecas.
 
